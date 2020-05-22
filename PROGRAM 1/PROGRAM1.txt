@@ -1,0 +1,26 @@
+EXERCISE STATEMENT	
+	 
+The x86 instruction set doesn't include a multiply instruction.
+Write a short program that reads two values from the user and
+displays their product.
+
+
+PROGRAM
+
+	get
+	cmp	ax, 0
+	je	a
+	mov	dx, ax
+	get
+	cmp	ax, 0
+	je	a
+	mov	cx, ax
+	mov	bx, 1
+	sub	ax, ax
+c:	sub	cx, bx
+	add	ax, dx
+	cmp	cx, 0
+	je	b
+	jmp	c
+b:	put
+a:	halt	
