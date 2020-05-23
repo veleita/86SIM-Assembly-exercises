@@ -8,10 +8,10 @@
 	mov	cx, ax
 	mov	bx, 1
 	sub	ax, ax
-c:	sub	cx, bx
+b:	sub	cx, bx
 	add	ax, dx
 	cmp	cx, 0
-	je	b
-	jmp	c
-b:	put
-a:	halt	
+	je	a
+	jmp	b
+a:	put
+	halt	

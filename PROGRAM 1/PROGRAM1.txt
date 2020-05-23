@@ -23,4 +23,26 @@ c:	sub	cx, bx
 	je	b
 	jmp	c
 b:	put
-a:	halt	
+a:	halt
+
+
+TEST CASES
+
+Input values			Expected result
+1, 2				2
+2, 1				2
+1, 1				1
+3, 4				C (hexadecimal 12)
+2710 (hexadecimal 10000), 2	4E20 (hexadecimal 20000)
+186, 5a (hexadecimal 390, 90)	891C (hexadecimal 35100)
+4, 0				0
+0, 1				0
+1, 0				0
+0, 0				0
+
+
+CONSIDERATIONS
+
+When the first operand is 0, the program will stop and return 0 before the user can enter the second operand. This has been designed this way purposely for the sake of execution speed, though it could be easily rearranged to let the user enter always both operands.
+
+This program will not function correctly for products bigger than 65535 (hexadecimal FFFF). The cause of this is that the output register for the SIMx86 can only store two words (32 bits, 4 hexadecimal digits).
