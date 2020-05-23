@@ -1,0 +1,39 @@
+You are to write these programs in x86 assembly language code 
+using the SIMx86 program. Include a specification document, a 
+test plan, a program listing, and sample output with your 
+program submissions.
+
+1) The x86 instruction set does not include a multiply instruction. Write a short program that reads two values from the user and displays their product (hint: remember that multiplication is just repeated addition).
+
+2) Create a callable subroutine that performs the multplication problem (1) above. Pass the two values to multiple to the subroutine in the ax and bx registers. Return the product in the cx register. Use the self-modifying code technique found in the section “Self Modifying
+Code Exercises” on page 136.
+
+3) Write a program that reads two two-bit numbers from switches (FFF0/FFF2) and (FFF4/FFF6). Treating these bits as logical values, your code should compute the three-bit sum of these two values (two-bit result plus a carry). Use the logic equations for the full adder from the previous chapter. Do not simply add these values using the x86 add instruction.
+Display the three-bit result on LEDs FFF8, FFFA, and FFFC.
+
+4) Write a subroutine that expects an address in BX, a count in CX, and a value in AX. It should write CX copies of AX to successive words in memory starting at address BX.
+Write a main program that calls this subroutine several times with different addresses.
+Use the self-modifying code subroutine call and return mechanism described in the laboratory exercises.
+
+5) Write the generic logic function for the x86 processor (see Chapter Two). Hint: add ax, ax does a shift left on the value in ax. You can test to see if the high order bit is set by checking
+to see if ax is greater than 8000h.
+
+6) Write a program that reads the generic function number for a four-input function from the user and then continually reads the switches and writes the result to an LED.
+
+7) Write a program that scans an array of words starting at address 1000h and memory, of the length specified by the value in cx, and locates the maximum value in that array. Display the value after scanning the array.
+
+8) Write a program that computes the two’s complement of an array of values starting at location 1000h. CX should contain the number of values in the array. Assume each array element is a two-byte integer.
+
+9) Write a “light show” program that displays a “light show” on the SIMx86’s LEDs. It should accomplish this by writing a set of values to the LEDs, delaying for some time period (by executing an empty loop) and then repeating the process over and over again.
+Store the values to write to the LEDs in an array in memory and fetch a new set of LED values from this array on each loop iteration.
+
+10) Write a simple program that sorts the words in memory locations 1000..10FF in ascending
+order. You can use a simple insertion sort algorithm. The Pascal code for such a sort is
+	for i := 0 to n-1 do
+	for j := i+1 to n do
+	if (memory[i] > memory[j]) then
+	begin
+		temp := memory[i];
+		memory[i] := memory[j];
+		memory[j] := temp;
+	end;
