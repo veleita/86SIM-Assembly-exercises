@@ -1,0 +1,11 @@
+	mov	cx, 0
+	cmp	ax, 0
+	je	b
+	cmp	bx, 0
+	je	b
+	mov	dx, 1
+a:	add	cx, ax
+	sub	bx, dx
+	cmp	bx, 0
+	jne	a
+b:	jmp	0

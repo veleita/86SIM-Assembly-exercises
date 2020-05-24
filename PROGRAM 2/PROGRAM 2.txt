@@ -1,0 +1,64 @@
+EXERCISE STATEMENT
+
+Create a callable subroutine that performs the multplication problem (1) above. Pass the two values to multiple to the subroutine in the ax and bx registers. Return the product in the cx register. Use the self-modifying code technique found in the section “Self Modifying
+Code Exercises” on page 136.
+
+
+PROGRAM
+
+	MAIN CALL
+
+	get
+	mov	bx, ax
+	get
+	mov	dx, 000C
+	mov	[006B], dx
+	jmp	0050
+	mov	ax, cx
+	put
+	halt
+
+	SUBROUTINE
+
+	mov	cx, 0
+	cmp	ax, 0
+	je	b
+	cmp	bx, 0
+	je	b
+	mov	dx, 1
+a:	add	cx, ax
+	sub	bx, dx
+	cmp	bx, 0
+	jne	a
+b:	jmp	0
+
+
+TEST CASES
+
+First, open PR2_MAIN in the SIMX86 program and assemble it with
+starting adress at 0000.
+Then, open PR2_SUB and assemble it with starting adress at 0050.
+DO NOT CLEAR MEMORY BETWEEN THE TWO STEPS ABOVE.
+Finally, you can make the same tests as for PROGRAM1
+
+Input values			Expected result
+1, 2				2
+2, 1				2
+1, 1				1
+3, 4				C (hexadecimal 12)
+2710 (hexadecimal 10000), 2	4E20 (hexadecimal 20000)
+186, 5a (hexadecimal 390, 90)	891C (hexadecimal 35100)
+4, 0				0
+0, 1				0
+1, 0				0
+0, 0				0
+
+
+CONSIDERATIONS
+
+All the same considerations specified in PROGRAM1.txt
+
+As written above, this program will run if the main call is assembled
+starting at position 0000 in memory and the subroutine at position
+0050, though it can be easily rearranged to work with other memory
+locations.

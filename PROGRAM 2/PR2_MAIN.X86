@@ -1,0 +1,9 @@
+	get
+	mov	bx, ax
+	get
+	mov	dx, 000C
+	mov	[006B], dx
+	jmp	0050
+	mov	ax, cx
+	put
+	halt
