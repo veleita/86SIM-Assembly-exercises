@@ -1,0 +1,97 @@
+EXERCISE STATEMENT
+
+Write a program that reads two two-bit numbers from switches (FFF0/FFF2) and (FFF4/FFF6). Treating these bits as logical values, your code should compute the three-bit sum of these two values (two-bit result plus a carry). Use the logic equations for the full adder from the previous chapter. Do not simply add these values using the x86 add instruction.
+Display the three-bit result on LEDs FFF8, FFFA, and FFFC.
+
+
+PSEUDO CODE AND EQUATIONS
+
+Half adder equation:
+	S = AB' + A'B
+	C = AB
+
+Full adder equation:
+	S = A'B'C + A'BC' + AB'C' + ABC
+	C = AB + AC + BC
+
+Our operation will be noted as DEF = GH + IJ
+Where
+	D = [FFF8], E = [FFFA], F = [FFFC]
+	G = [FFF0], H = [FFF2]
+	I = [FFF4], J = [FFF6]
+
+(EXAMPLE: 010 = 01 + 01. ARITHMETICAL, not logical, operators here)
+
+First step: 
+	F = HJ' + H'J [half adder]
+
+Second step: 
+	E = G'I'(HJ) + G'I(HJ)' + GI'(HJ)' + GI(HJ) [full adder]
+	Note that (HJ) is the carry from the previous half adder
+
+Third step:
+	D = GI + G(HJ) + I(HJ)
+
+
+PROGRAM
+
+	NOT HAZARD PROTECTED (READABLE VERSION)
+
+	mov	dx, [FFF2]	; dx = J
+	not	dx		; dx = J'
+	mov	ax, [FFF6]	; ax = H
+	and	ax, dx		; ax = HJ'
+	mov	cx, [FFF6]	; cx = H
+	not	cx		; cx = H'	
+	add	cx, [FFF2]	; cx = H'J
+	or	ax, cx		; ax = HJ' + H'J
+	mov	[FFFC], ax	; [FFFC] = F = HJ' + H'J
+
+	mov	bx, [FFF6]	; bx = H
+	not	dx		; dx = J
+	and	bx, dx		; bx = HJ
+	mov	ax, [FFF4]	; ax = I
+	mov	dx, [FFF0]	; dx = G
+	mov	cx, dx		; cx = G
+	and	dx, ax		; dx = GI
+	and	dx, bx		; dx = GI(HJ)
+	mov	1000, dx	; [1000] = GI(HJ)
+	mov	dx, cx		; dx = G
+	not	dx		; dx = G'
+	not	ax		; ax = I'
+	and	dx, ax		; dx = G'I'
+	and	dx, bx		; dx = G'I'(HJ)
+	mov	1002, dx	; [1002] = G'I'(HJ)
+	not	bx		; bx = (HJ)'
+	mov	dx, cx		; dx = G
+	and	dx, ax		; dx = GI'
+	and	dx, bx		; dx = GI'(HJ)'
+	mov	1004, dx	; [1004] = GI'(HJ)'
+	mov	dx, cx		; dx = G
+	not	dx		; dx = G'
+	not	ax		; ax = I
+	and	dx, ax		; dx = G'I
+	and	dx, bx		; dx = G'I(HJ)'
+	or	dx, [1004]	; dx = G'I(HJ)' + GI'(HJ)'
+	or	dx, [1002]	; dx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ)
+	or	dx, [1000]	; dx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ) + GI(HJ)
+	mov	FFFA, dx	; [FFFA] = dx = E
+
+	mov	dx, cx		; dx = G
+	and	dx, ax		; dx = GI
+	not	bx		; bx = HJ
+	and	cx, bx		; cx = G(HJ)
+	and	ax, bx		; ax = I(HJ)
+	or	ax, cx		; ax = I(HJ) + G(HJ)
+	or	ax, dx		; ax = I(HJ) + G(HJ) + GI
+	mov	FFF8, ax	; [FFF8] = ax = D
+	
+	HAZARD PROTECTED (OPTIMAL VERSION)
+
+
+TEST CASES
+
+
+
+CONSIDERATIONS
+
