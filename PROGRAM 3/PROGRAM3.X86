@@ -1,0 +1,45 @@
+	mov	ax, [FFF2]
+	mov	cx, [FFF6]
+	mov	bx, ax
+	mov	dx, cx
+	not	ax
+	and	ax, cx
+	not	cx
+	and	cx, bx
+	or	ax, cx
+	and	dx, bx
+	mov	[FFFC], ax
+	mov	ax, [FFF4]
+	mov	bx, [FFF0]
+	mov	cx, bx
+	and	cx, ax
+	and	cx, dx
+	mov	[1000], cx
+	mov	cx, bx
+	not	ax
+	not	cx
+	and	cx, ax
+	mov	[1002], cx
+	mov	cx, bx
+	not	dx
+	and	cx, ax
+	and	cx, dx
+	mov	[1004], cx
+	mov	cx, bx
+	not	ax
+	not	cx
+	and	cx, dx
+	and	cx, ax
+	or	cx, [1004]
+	or	cx, [1002]
+	or	cx, [1000]
+	mov	[FFFA], cx
+	mov	cx, bx
+	not	dx
+	and	cx, ax
+	and	bx, dx
+	and	ax, dx
+	or	ax, bx
+	or	ax, cx
+	mov	[FFF8], ax
+	halt

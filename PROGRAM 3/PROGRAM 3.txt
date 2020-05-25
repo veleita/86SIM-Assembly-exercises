@@ -1,11 +1,11 @@
 EXERCISE STATEMENT
-
+------------------------------------------------------------------------------------------------
 Write a program that reads two two-bit numbers from switches (FFF0/FFF2) and (FFF4/FFF6). Treating these bits as logical values, your code should compute the three-bit sum of these two values (two-bit result plus a carry). Use the logic equations for the full adder from the previous chapter. Do not simply add these values using the x86 add instruction.
 Display the three-bit result on LEDs FFF8, FFFA, and FFFC.
 
 
 PSEUDO CODE AND EQUATIONS
-
+------------------------------------------------------------------------------------------------
 Half adder equation:
 	S = AB' + A'B
 	C = AB
@@ -34,64 +34,126 @@ Third step:
 
 
 PROGRAM
-
+------------------------------------------------------------------------------------------------
 	NOT HAZARD PROTECTED (READABLE VERSION)
 
-	mov	dx, [FFF2]	; dx = J
-	not	dx		; dx = J'
-	mov	ax, [FFF6]	; ax = H
-	and	ax, dx		; ax = HJ'
+	mov	ax, [FFF2]	; ax = J
+	mov	bx, ax		; bx = J
+	not	ax		; ax = J'
 	mov	cx, [FFF6]	; cx = H
+	mov	dx, cx		; dx = H
+	and	ax, cx		; ax = J'H
 	not	cx		; cx = H'	
-	add	cx, [FFF2]	; cx = H'J
-	or	ax, cx		; ax = HJ' + H'J
-	mov	[FFFC], ax	; [FFFC] = F = HJ' + H'J
+	and	cx, bx		; cx = H'J
+	or	ax, cx		; ax = J'H + H'J
+	mov	[FFFC], ax	; [FFFC] = F = H'J + HJ'
 
-	mov	bx, [FFF6]	; bx = H
-	not	dx		; dx = J
-	and	bx, dx		; bx = HJ
+	and	dx, bx		; dx = HJ
 	mov	ax, [FFF4]	; ax = I
-	mov	dx, [FFF0]	; dx = G
-	mov	cx, dx		; cx = G
-	and	dx, ax		; dx = GI
-	and	dx, bx		; dx = GI(HJ)
-	mov	1000, dx	; [1000] = GI(HJ)
-	mov	dx, cx		; dx = G
-	not	dx		; dx = G'
+	mov	bx, [FFF0]	; bx = G
+	mov	cx, bx		; cx = G
+	and	cx, ax		; cx = GI
+	and	cx, dx		; cx = GI(HJ)
+	mov	[1000], cx	; [1000] = GI(HJ)
+	mov	cx, bx		; cx = G
+	not	cx		; cx = G'
 	not	ax		; ax = I'
-	and	dx, ax		; dx = G'I'
-	and	dx, bx		; dx = G'I'(HJ)
-	mov	1002, dx	; [1002] = G'I'(HJ)
-	not	bx		; bx = (HJ)'
-	mov	dx, cx		; dx = G
-	and	dx, ax		; dx = GI'
-	and	dx, bx		; dx = GI'(HJ)'
-	mov	1004, dx	; [1004] = GI'(HJ)'
-	mov	dx, cx		; dx = G
-	not	dx		; dx = G'
+	and	cx, ax		; dx = G'I'
+	and	cx, dx		; dx = G'I'(HJ)
+	mov	[1002], cx	; [1002] = G'I'(HJ)
+	mov	cx, bx		; cx = G
+	and	cx, ax		; cx = GI'
+	not	dx		; dx = (HJ)'
+	and	cx, dx		; cx = GI'(HJ)'
+	mov	[1004], cx	; [1004] = GI'(HJ)'
+	mov	cx, bx		; cx = G
+	not	cx		; cx = G'
 	not	ax		; ax = I
-	and	dx, ax		; dx = G'I
-	and	dx, bx		; dx = G'I(HJ)'
-	or	dx, [1004]	; dx = G'I(HJ)' + GI'(HJ)'
-	or	dx, [1002]	; dx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ)
-	or	dx, [1000]	; dx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ) + GI(HJ)
-	mov	FFFA, dx	; [FFFA] = dx = E
+	and	cx, ax		; cx = G'I
+	and	cx, dx		; cx = G'I(HJ)'
+	or	cx, [1004]	; cx = G'I(HJ)' + GI'(HJ)'
+	or	cx, [1002]	; cx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ)
+	or	cx, [1000]	; cx = G'I(HJ)' + GI'(HJ)' + G'I'(HJ) + GI(HJ)
+	mov	FFFA, cx	; [FFFA] = cx = E
 
-	mov	dx, cx		; dx = G
-	and	dx, ax		; dx = GI
-	not	bx		; bx = HJ
-	and	cx, bx		; cx = G(HJ)
-	and	ax, bx		; ax = I(HJ)
-	or	ax, cx		; ax = I(HJ) + G(HJ)
-	or	ax, dx		; ax = I(HJ) + G(HJ) + GI
-	mov	FFF8, ax	; [FFF8] = ax = D
+	mov	cx, bx		; cx = G
+	and	cx, ax		; cx = GI
+	not	dx		; dx = HJ
+	and	bx, dx		; bx = G(HJ)
+	and	ax, dx		; ax = I(HJ)
+	or	ax, bx		; ax = I(HJ) + G(HJ)
+	or	ax, cx		; ax = I(HJ) + G(HJ) + GI
+	mov	[FFF8], ax	; [FFF8] = ax = D
 	
+
 	HAZARD PROTECTED (OPTIMAL VERSION)
 
+	mov	ax, [FFF2]
+	mov	cx, [FFF6]
+	mov	bx, ax
+	mov	dx, cx
+	not	ax
+	and	ax, cx
+	not	cx
+	and	cx, bx
+	or	ax, cx
+	and	dx, bx
+	mov	[FFFC], ax
+	mov	ax, [FFF4]
+	mov	bx, [FFF0]
+	mov	cx, bx
+	and	cx, ax
+	and	cx, dx
+	mov	[1000], cx
+	mov	cx, bx
+	not	ax
+	not	cx
+	and	cx, ax
+	mov	[1002], cx
+	mov	cx, bx
+	not	dx
+	and	cx, ax
+	and	cx, dx
+	mov	[1004], cx
+	mov	cx, bx
+	not	ax
+	not	cx
+	and	cx, dx
+	and	cx, ax
+	or	cx, [1004]
+	or	cx, [1002]
+	or	cx, [1000]
+	mov	[FFFA], cx
+	mov	cx, bx
+	not	dx
+	and	cx, ax
+	and	bx, dx
+	and	ax, dx
+	or	ax, bx
+	or	ax, cx
+	mov	[FFF8], ax
+	halt
+
+	
 
 TEST CASES
+------------------------------------------------------------------------------------------------
+Switches = Input	Leds = Output
+Red = 1			White = 0
 
+	Input		Output		[Arithmetical operation]
+	00, 00		000			0 + 0 = 0
+	00, 01		001			0 + 1 = 1
+	01, 00		001			1 + 0 = 1
+	01, 01		010			1 + 1 = 2
+	10, 00		010			2 + 0 = 2
+	01, 10		011			1 + 2 = 3
+	10, 10		100			2 + 2 = 4
+	11, 01		100			3 + 1 =	4
+	10, 11		101			2 + 3 = 5
+	11, 11		111			3 + 3 = 6
 
 
 CONSIDERATIONS
-
+------------------------------------------------------------------------------------------------
+None
