@@ -1,0 +1,77 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+Write the generic logic function for the x86 processor (see Chapter Two).
+
+[Description of the generic logic function found in Chapter Two]
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+
+	mov	bx, 0050	; Variables will be stored starting at memory adress 0050
+	get			; Fetch the function number
+	cmp	ax, 0		 
+	je	g		; Stop the program if the user enters 0
+	mov	ax, [bx]	; Store the function number in 0050
+	get			; Fetch boolean value A
+	mov	ax, [bx + 2]	; Store boolean value A in 0052
+	get
+	mov	ax, [bx + 4]	; Store boolean value B	in 0054
+	get
+	mov	ax, [bx + 6]	; Store boolean value C in 0056
+	get
+	mov	dx, ax		; Store boolean value D in dx
+	mov	cx, 8		; dx = D *= 8
+a:	add	dx, dx
+	sub	cx, 1
+	cmp	cx, 1
+	jne	a
+	mov	ax, dx		; ax = D * 8
+	mov	dx, [bx + 6]
+	mov	cx, 4		; dx = C *= 4
+b:	add	dx, dx
+	sub	cx, 1
+	cmp	cx, 1
+	jne	b
+	add	ax, dx		; ax = D * 8 + C * 4
+	mov	dx, [bx + 4]
+	mov	cx, 2		; dx = B *= 2
+c:	add	dx, dx
+	sub	cx, 1
+	cmp	cx, 1
+	jne	c
+	add	ax, dx		; ax = D * 8 + C * 4 + B * 2
+	mov	dx, [bx + 2]
+	add	ax, dx		; ax = D * 8 + C * 4 + B * 2 + A
+	mov	cx, ax		; cx = D * 8 + C * 4 + B * 2 + A
+	mov	ax, [bx]	; ax = func (function number)
+d:	cmp	cx, 0
+	je	e
+	add	ax, ax		; ax *= 2 (shift left ax)
+	jmp	d
+e:	cmp	ax, 8000h	; check if the HO bit is set (8000h = 1000 0000 0000 0000)
+	jae	f		; If it is set, jump to f
+	mov	ax, 0
+	put
+	halt
+f:	mov	ax, 1
+	put
+g:	halt
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+	Input					Output
+Func 		| A | B | C | D |
+8000h (AND)	 1   1   1   1			1
+8000h (AND)	 1   0   1   0			0
+FFFEh (OR)	 0   0   0   0			0
+FFFEh (OR)	 0   1   0   0			1
+8001h (equal)	 1   1   0   1			0
+8001h (equal)    0   0   0   0			1
+7FFEh (XOR)	 0   0   1   0			1
+7FFEh (XOR)      1   1   1   1			0
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------
