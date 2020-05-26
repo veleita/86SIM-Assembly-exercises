@@ -1,0 +1,50 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+Write a subroutine that expects an address in BX, a count in CX, and a value in AX. It should write CX copies of AX to successive words in memory starting at address BX.
+Write a main program that calls this subroutine several times with different addresses.
+Use the self-modifying code subroutine call and return mechanism described in the laboratory exercises.
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+	MAIN
+	
+	mov	bx, 0100
+	mov	cx, 3
+	mov	ax, 3412
+	mov	dx, 0012
+	mov	[0061], dx
+	jmp	0050
+	halt
+
+
+	SUBROUTINE
+
+a:	cmp	cx, 0
+	je	b
+	mov	[bx], ax
+	sub	cx, 1
+	add	bx, 2
+	jmp	a
+b:	jmp	0
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+This program doesn't accept input nor give an output. To test it, you must change the values of the registers in the source code of the main call and look into memory to check that the program has performed the proper operations on it.
+
+With the main call written above, the subroutine will write 1234 three times on memory positions 0100 to 0105. 
+
+If you change the instruction "mov bx, 0100" to "mov bx, 0200", for example, these same values will be written on memory positions 0200 to 0205.
+
+If you change the instruction "mov cx, 3" to "mov cx, 5", for example, these same values will be written five times instead of three, on memory positions 0200 to 0209.
+
+
+If you change the instruction "mov ax, 3412" to "mov ax, 2001", the subroutine will write 0120 on memory instead of 1234 (the order of the bytes is switched).
+
+The subroutine must be assembled with starting position 0050, so the main call (assembled in 0000 in this case) can find it and store it return position properly. This position can be easily rearranged, the same it could in PROGRAM 2.
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------
+The adress in the instruction "mov [0061], dx" is essential for the call to work properly. Make sure that the halt instruction in this case (or whichever instruction you want the subroutine to return to) is in the 0061 memory position. 
