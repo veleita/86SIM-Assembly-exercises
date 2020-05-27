@@ -4,60 +4,57 @@ Write the generic logic function for the x86 processor (see Chapter Two).
 
 [Description of the generic logic function found in Chapter Two]
 
+[...] a program that lets you enter an arbitrary boolean function with one to four different variables. This program will read the inputs and produce and necessary function results. Since the number of unique four variable functions is large (65,536, to be exact), it is not practical to include a specific solution for each one in a program. What is necessary is a generic logic function, one that will compute the results for any arbitrary function.[...]
+
+A generic boolean function of four variables requires five parameters – the four input
+parameters and a fifth parameter that specifies the function to compute. While there are
+lots of ways to specify the function to compute, we’ll pass the boolean function’s number
+as this fifth parameter.
+
+[...] keep in mind that the bits that make up the function’s number come directly from the truth table for that function. Therefore, if we extract the bits from the function’s number, we can construct the truth table for that function. Indeed, if we just select the ith bit of the function number, where i = D*8 + C*4 + B*2 + A you will get the function result for that particular value of A, B, C, and D.
+
 
 PROGRAM
 ------------------------------------------------------------------------------------------------
 
-	mov	bx, 0050	; Variables will be stored starting at memory adress 0050
+	mov	bx, 0100	; Variables will be stored starting at memory adress 0100
 	get			; Fetch the function number
 	cmp	ax, 0		 
-	je	g		; Stop the program if the user enters 0
-	mov	ax, [bx]	; Store the function number in 0050
+	je	d		; Stop the program if the user enters 0
+	mov	[bx], ax	; Store the function number in 0100
 	get			; Fetch boolean value A
-	mov	ax, [bx + 2]	; Store boolean value A in 0052
+	mov	[2+bx], ax	; Store boolean value A in 0102
 	get
-	mov	ax, [bx + 4]	; Store boolean value B	in 0054
+	mov	[4+bx], ax	; Store boolean value B	in 0104
 	get
-	mov	ax, [bx + 6]	; Store boolean value C in 0056
-	get
-	mov	dx, ax		; Store boolean value D in dx
-	mov	cx, 8		; dx = D *= 8
-a:	add	dx, dx
-	sub	cx, 1
-	cmp	cx, 1
-	jne	a
-	mov	ax, dx		; ax = D * 8
-	mov	dx, [bx + 6]
-	mov	cx, 4		; dx = C *= 4
-b:	add	dx, dx
-	sub	cx, 1
-	cmp	cx, 1
-	jne	b
-	add	ax, dx		; ax = D * 8 + C * 4
-	mov	dx, [bx + 4]
-	mov	cx, 2		; dx = B *= 2
-c:	add	dx, dx
-	sub	cx, 1
-	cmp	cx, 1
-	jne	c
-	add	ax, dx		; ax = D * 8 + C * 4 + B * 2
-	mov	dx, [bx + 2]
-	add	ax, dx		; ax = D * 8 + C * 4 + B * 2 + A
-	mov	cx, ax		; cx = D * 8 + C * 4 + B * 2 + A
-	mov	ax, [bx]	; ax = func (function number)
-d:	cmp	cx, 0
-	je	e
-	add	ax, ax		; ax *= 2 (shift left ax)
-	jmp	d
-e:	cmp	ax, 8000h	; check if the HO bit is set (8000h = 1000 0000 0000 0000)
-	jae	f		; If it is set, jump to f
+	mov	[6+bx], ax	; Store boolean value C in 0106
+	get			; ax = D
+	mov	dx, [6+bx]	; dx = C
+	add	dx, dx		; dx = 2C
+	add	ax, dx		; ax = 2C + D
+	mov	dx, [4+bx]	; dx = B
+	add	dx, dx		; dx = 2B
+	add	dx, dx		; dx = 4B
+	add	ax, dx		; ax = 4B + 2C + D
+	mov	dx, [2+bx]	; dx = A
+	add	dx, dx		; dx = 2A
+	add	dx, dx		; dx = 4A
+	add	dx, dx		; dx = 8A
+	add	ax, dx		; ax = 8A + 4B + 2C + D
+	mov	dx, [bx]	; dx = func (function number)
+a:	cmp	ax, F		; Tests if ax is equal to 15
+	je	b
+	add	dx, dx		; func *= 2 (shift left dx)
+	add	ax, 1
+	jmp	a
+b:	cmp	dx, 8000	; check if the HO bit is set (8000h = 1000 0000 0000 0000)
+	jae	c		; If it is set, jump to f
 	mov	ax, 0
 	put
 	halt
-f:	mov	ax, 1
+c:	mov	ax, 1
 	put
-g:	halt
-
+d:	halt
 
 TEST CASES
 ------------------------------------------------------------------------------------------------
@@ -75,3 +72,6 @@ FFFEh (OR)	 0   1   0   0			1
 
 CONSIDERATIONS
 ------------------------------------------------------------------------------------------------
+If you check the generic boolean function written in C on Chapter Two, you may notice that the selection of the ith bit of the function number is done differently. The func parameter is right shifted, and the selected bit is the L.O. bit, while here the function number is left shifted and the selected bit is the H.O. one. Nevertheless, the function works just the same, except that the number of sifts is the complementary not n, but 15 - n.
+
+The program above stores some variables on memory positions starting on 0100, you can change the initial value of bx to store these elsewhere. Be careful, though, not to use memory that is already storing instructions from the program.
