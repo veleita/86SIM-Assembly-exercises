@@ -1,0 +1,98 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+Write a “light show” program that displays a “light show” on the SIMx86’s LEDs. It should accomplish this by writing a set of values to the LEDs, delaying for some time period (by executing an empty loop) and then repeating the process over and over again.
+Store the values to write to the LEDs in an array in memory and fetch a new set of LED values from this array on each loop iteration.
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+
+	MAIN
+
+	mov	ax, 1		; Initialization
+	mov	bx, 0
+
+	mov	[1000], ax	; First node
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], bx
+	mov	cx, 1B		; cx = memory location of next node
+	mov	[2025], cx		; memory location of subroutine return (jmp 0)
+	jmp	2000		; jump to subroutine
+
+	mov	[1000], bx	; Second node
+	mov	[1002], ax
+	mov	[1004], bx
+	mov	[1006], bx
+	jmp	[2000]
+	mov	cx, 30
+	mov	[2025], cx
+	jmp	2000
+
+	mov	[2025], cx	; Third node
+	jmp	2000
+	mov	[1000], bx
+	mov	[1002], bx
+	mov	[1004], ax
+	mov	[1006], bx
+	mov	cx, 45
+	mov	[2025], cx
+	jmp	2000
+
+	mov	[1000], bx	; Fourth node
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], ax
+	mov	cx, 5A
+	mov	[2025], cx
+	jmp	2000
+
+	mov	[1000], bx	; Fifth node
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], bx
+	mov	cx, 6F
+	mov	[2025], cx
+	jmp	2000
+
+	mov	[1000], ax	; Sixth node
+	mov	[1002], ax
+	mov	[1004], ax
+	mov	[1006], ax
+	mov	cx, 84		; cx = memory location of halt
+	mov	[2025], cx
+	jmp	2000
+
+	halt
+
+
+	SUBROUTINE
+
+	mov	dx, [1000]
+	mov	[FFF8], dx
+	mov	dx, [1002]
+	mov	[FFFA], dx
+	mov	dx, [1004]
+	mov	[FFFC], dx
+	mov	dx, [1006]
+	mov	[FFFE], dx
+	
+	mov	cx, 5000	; Empty loop to make the program wait
+a:	sub	cx, 1
+	cmp	cx, 0
+	jne	b
+	jmp	0
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+This program will perform a very simple light show. The lights will turn on one by one from left to right, then go all off, and then go all on. 
+
+Each node is a state of the lights, you can add as many nodes that you want or alter the ones written above. 
+
+You can also change the speed of the light show by changing the initial value of cx in the subroutine; lower values will make the program run faster, higher values will make it faster.
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------
+Like all the other subroutine calls, this one will only work if the return direction of the main call (the mov [2025], cx instruction in this case) is correct, so both functions are properly connected.

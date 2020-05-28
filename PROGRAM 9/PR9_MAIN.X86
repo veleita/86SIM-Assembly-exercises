@@ -1,0 +1,45 @@
+	mov	ax, 1
+	mov	bx, 0
+	mov	[1000], ax
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], bx
+	mov	cx, 1B
+	mov	[2025], cx
+	jmp	2000
+	mov	[1000], bx
+	mov	[1002], ax
+	mov	[1004], bx
+	mov	[1006], bx
+	mov	cx, 30
+	mov	[2025], cx
+	jmp	2000
+	mov	[1000], bx
+	mov	[1002], bx
+	mov	[1004], ax
+	mov	[1006], bx
+	mov	cx, 45
+	mov	[2025], cx
+	jmp	2000
+	mov	[1000], bx
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], ax
+	mov	cx, 5A
+	mov	[2025], cx
+	jmp	2000
+	mov	[1000], bx
+	mov	[1002], bx
+	mov	[1004], bx
+	mov	[1006], bx
+	mov	cx, 6F
+	mov	[2025], cx
+	jmp	2000
+	mov	[1000], ax
+	mov	[1002], ax
+	mov	[1004], ax
+	mov	[1006], ax
+	mov	cx, 84
+	mov	[2025], cx
+	jmp	2000
+	halt

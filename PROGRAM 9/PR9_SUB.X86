@@ -1,0 +1,14 @@
+	mov	dx, [1000]
+	mov	[FFF8], dx
+	mov	dx, [1002]
+	mov	[FFFA], dx
+	mov	dx, [1004]
+	mov	[FFFC], dx
+	mov	dx, [1006]
+	mov	[FFFE], dx
+	
+	mov	cx, 5000
+a:	sub	cx, 1
+	cmp	cx, 0
+	jne	a
+	jmp	0
