@@ -1,0 +1,22 @@
+	mov	cx, 3
+	mov	dx, FFFF
+	mov	[1000], dx
+	mov	dx, 1
+	mov	[1002], dx
+	mov	dx, 5
+	mov	[1004], dx
+	mov	dx, FFEE
+	mov	[1006], dx
+	brk
+
+	mov	bx, 1000
+a:	cmp	cx, 0
+	je	b
+	mov	dx, [bx]
+	not	dx
+	add	dx, 1
+	mov	[bx], dx
+	add	bx, 2
+	sub	cx, 1
+	jmp	a
+b:	halt	

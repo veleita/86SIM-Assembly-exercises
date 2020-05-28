@@ -1,0 +1,67 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+Write a program that computes the two’s complement of an array of values starting at location 1000h. CX should contain the number of values in the array. Assume each array element is a two-byte integer.
+
+
+DOCUMENTATION
+------------------------------------------------------------------------------------------------
+In the two’s complement system, the H.O. bit of a number is a sign bit. If the H.O. bit is zero, the number is positive; if the H.O. bit is one, the number is negative.
+
+To convert a positive number to its negative, two’s complement form, you use the following algorithm:
+
+	1) Invert all the bits in the number, i.e., apply the logical NOT function.
+	2) Add one to the inverted result.
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+
+	mov	bx, 1000
+a:	cmp	cx, 0
+	je	b
+	mov	dx, [bx]
+	not	dx
+	add	dx, 1
+	mov	[bx], dx
+	add	bx, 2
+	sub	cx, 1
+	jmp	a
+b:	halt
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+The following lines of code have been added to the PROGRAM7.X86 file in order for it to execute an example test.
+
+	mov	cx, 4
+	mov	dx, FFFF	; FFFF = -1
+	mov	[1000], dx
+	mov	dx, 1
+	mov	[1002], dx
+	mov	dx, 5
+	mov	[1004], dx
+	mov	dx, FFEE	; FFEF = -18
+	mov	[1006], dx
+	brk*
+
+This code sets cx to 4, so our program will read 4 words.
+Then, it writes the values -1, 1, 5 and -17 on contiguous cells of memory starting at position 1000.
+
+You can change the values in memory and the value of cx to test other cases.
+
+This program doesn't produce any output, to check the results you must compare the altered positions in memory before and after the execution of the program.
+
+		Input				Output
+| cx | 1000 | 1002 | 1004 | 1006 |	| 1000 | 1002 | 1004 | 1006 |
+  4    FFFF   0001   0005   FFEE	  0001   FFFF   FFFB** 0012**
+  3    FFFF   0001   0005   FFEE	  0001   FFFF   FFFB   FFEE
+
+
+* This instruction interrupts the program, so you can press run, wait until the break instruction, go check the initial values in memory, press run again and, once the program has finished, check the results again in memory
+
+** FFFB = -5,	0012h = 18
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------
+When you look into memory, take in count that the order of the bytes in each word is reversed. Thus, 0001 appears as 01 00, FFEE as EE FF, and so on.
