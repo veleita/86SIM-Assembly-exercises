@@ -1,0 +1,69 @@
+EXERCISE STATEMENT
+-------------------------------------------------------------------------------------------
+Write a program that reads the generic function number for a four-input function from the user and then continually reads the switches and writes the result to an LED.
+
+
+PROGRAM
+-------------------------------------------------------------------------------------------
+
+	mov	bx, 0100	; Variables will be stored starting at memory adress 0100
+	get			; Fetch the function number
+	cmp	ax, 0		 
+	je	d		; Stop the program if the user enters 0
+	mov	[bx], ax	; Store the function number in 0100
+e:	mov	ax, [FFF0]	; Read A from switch FFF0
+	mov	[2+bx],	ax	; Store A in 0102
+	mov	ax, [FFF2]	; Read B from switch FFF2
+	mov	[4+bx], ax	; Store B in 0104
+	mov	ax, [FFF4]	; Read C from switch FFF4
+	mov	[6+bx], ax	; Store C in 0106
+	mov	ax, [FFF6]	; Read D from switch FFF6 (ax = D)
+	mov	dx, [6+bx]	; dx = C
+	add	dx, dx		; dx = 2C
+	add	ax, dx		; ax = 2C + D
+	mov	dx, [4+bx]	; dx = B
+	add	dx, dx		; dx = 2B
+	add	dx, dx		; dx = 4B
+	add	ax, dx		; ax = 4B + 2C + D
+	mov	dx, [2+bx]	; dx = A
+	add	dx, dx		; dx = 2A
+	add	dx, dx		; dx = 4A
+	add	dx, dx		; dx = 8A
+	add	ax, dx		; ax = 8A + 4B + 2C + D
+	mov	dx, [bx]	; dx = func (function number)
+a:	cmp	ax, F		; Tests if ax is equal to 15
+	je	b
+	add	dx, dx		; func *= 2 (shift left dx)
+	add	ax, 1
+	jmp	a
+b:	cmp	dx, 8000	; check if the HO bit is set (8000h = 1000 0000 0000 0000)
+	jae	c		; If it is set, jump to f
+	mov	ax, 0
+	mov	[FFF8], ax	; Turn off led FFF8
+	jmp	e
+c:	mov	ax, 1
+	mov	[FFF8], ax	; Turn on led FFF8
+	jmp	e
+d:	halt
+
+
+TEST CASES
+------------------------------------------------------------------------------------------
+Red = 1
+White = 0
+
+	Input						Output
+Func 		| FFF0 | FFF2 | FFF4 | FFF3 |		FFF8
+8000h (AND)	 1      1   	1   	1		1
+8000h (AND)	 1   	0   	1   	0		0
+FFFEh (OR)	 0   	0   	0   	0		0
+FFFEh (OR)	 0   	1   	0   	0		1
+8001h (equal)	 1   	1   	0   	1		0
+8001h (equal)    0   	0   	0	0		1
+7FFEh (XOR)	 0   	0   	1   	0		1
+7FFEh (XOR)      1   	1   	1   	1		0
+
+
+CONSIDERATIONS
+-------------------------------------------------------------------------------------------
+Same as the ones for the PROGRAM 5, as this is essentially the same code.

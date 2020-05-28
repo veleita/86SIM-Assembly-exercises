@@ -1,0 +1,39 @@
+	mov	bx, 0100
+	get
+	cmp	ax, 0
+	je	d
+	mov	[bx], ax
+e:	mov	ax, [FFF0]
+	mov	[2+bx], ax
+	mov	ax, [FFF2]
+	mov	[4+bx], ax
+	mov	ax, [FFF4]
+	mov	[6+bx], ax
+	mov	ax, [FFF6]
+	mov	dx, [6+bx]
+	add	dx, dx
+	add	ax, dx
+	mov	dx, [4+bx]
+	add	dx, dx
+	add	dx, dx
+	add	ax, dx
+	mov	dx, [2+bx]
+	add	dx, dx
+	add	dx, dx
+	add	dx, dx
+	add	ax, dx
+	mov	dx, [bx]
+a:	cmp	ax, F
+	je	b
+	add	dx, dx
+	add	ax, 1
+	jmp	a
+b:	cmp	dx, 8000
+	jae	c
+	mov	ax, 0
+	mov	[FFF8], ax
+	jmp	e
+c:	mov	ax, 1
+	mov	[FFF8], ax
+	jmp	e
+d:	halt

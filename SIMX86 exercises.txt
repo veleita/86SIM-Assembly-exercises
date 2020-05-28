@@ -17,8 +17,7 @@ Display the three-bit result on LEDs FFF8, FFFA, and FFFC.
 Write a main program that calls this subroutine several times with different addresses.
 Use the self-modifying code subroutine call and return mechanism described in the laboratory exercises.
 
-5) Write the generic logic function for the x86 processor (see Chapter Two). Hint: add ax, ax does a shift left on the value in ax. You can test to see if the high order bit is set by checking
-to see if ax is greater than 8000h.
+5) Write the generic logic function for the x86 processor (see Chapter Two). Hint: add ax, ax does a shift left on the value in ax. You can test to see if the high order bit is set by checking to see if ax is greater than 8000h.
 
 6) Write a program that reads the generic function number for a four-input function from the user and then continually reads the switches and writes the result to an LED.
 
