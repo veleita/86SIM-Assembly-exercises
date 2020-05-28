@@ -1,0 +1,23 @@
+	mov	cx, 4
+	mov	dx, 1234
+	mov	[1000], dx
+	mov	dx, 4000
+	mov	[1002], dx
+	mov	dx, 34
+	mov	[1004], dx
+	mov	dx, 7789
+	mov	[1006], dx
+
+	mov	ax, 0
+	mov	bx, 1000
+a:	cmp	cx, 0
+	je	b
+	mov	dx, [bx]
+	add	bx, 2
+	sub	cx, 1
+	cmp	dx, ax
+	jbe	a
+	mov	ax, dx
+	jmp	a
+b:	put
+	halt

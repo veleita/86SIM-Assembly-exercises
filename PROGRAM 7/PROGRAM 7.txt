@@ -1,0 +1,52 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+Write a program that scans an array of words starting at address 1000h and memory, of the length specified by the value in cx, and locates the maximum value in that array. Display the value after scanning the array.
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+
+	mov	ax, 0		; ax = 0
+	mov	bx, 1000	; bx = 1000
+a:	cmp	cx, 0
+	je	b		; Finish when cx = 0
+	mov	dx, [bx]	; dx = next word
+	add	bx, 2		; bx++
+	sub	cx, 1		; cx--
+	cmp	dx, ax
+	jbe	a
+	mov	ax, dx		; if dx > ax, ax = dx
+	jmp	a
+b:	put
+	halt
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+The following lines of code have been added to the PROGRAM7.X86 file in order for it to execute an example test.
+
+	mov	cx, 4
+	mov	dx, 1234
+	mov	[1000], dx
+	mov	dx, 4000
+	mov	[1002], dx
+	mov	dx, 34
+	mov	[1004], dx
+	mov	dx, 7789
+	mov	[1006], dx
+
+This code sets cx to 4, so our program will read 4 words.
+Then, it writes the values 1234, 4000, 34 and 7789 on contiguous cells of memory starting at position 1000.
+
+You can change the values in memory and the value of cx to test other cases.
+
+		Input				Output
+| cx | 1000 | 1002 | 1004 | 1006 |
+   4   1234   4000     34   7789		7789
+   3   1234   4000     34   7789		4000
+   3    234      0     34   7789		0234
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------
+None
