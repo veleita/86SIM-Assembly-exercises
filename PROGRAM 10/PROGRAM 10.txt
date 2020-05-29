@@ -1,0 +1,43 @@
+EXERCISE STATEMENT
+------------------------------------------------------------------------------------------------
+ Write a simple program that sorts the words in memory locations 1000..10FF in ascending
+order. You can use a simple insertion sort algorithm.
+
+
+PSEUDO CODE
+------------------------------------------------------------------------------------------------
+
+while i=0 < n
+	while j=1 < n
+		if string[i] > string[i]
+			swap string[i] and string[j]
+		j++
+	i++
+
+
+PROGRAM
+------------------------------------------------------------------------------------------------
+	mov	bx, 1000	; Set initial memory position to 1000
+a:	cmp	bx, 1100
+	je	d		; Stop the program when bx = 1100
+	mov	dx, [bx]	; dx = [bx]
+	mov	cx, bx		; cx = bx
+b:	cmp	cx, 10FF
+	je	c		; Stop the loop when cx = 10FF
+	add	cx, 2		; cx++
+	mov	ax, [cx]	; ax = [cx]
+	cmp	ax, dx
+	jbe	b		; If ax <= dx restart the loop
+	mov	[cx], dx
+	mov	[bx], ax	; Swap values
+c:	add	bx, 2		; bx++
+	jmp	a		; restart the loop
+d:	halt
+
+
+TEST CASES
+------------------------------------------------------------------------------------------------
+
+
+CONSIDERATIONS
+------------------------------------------------------------------------------------------------

@@ -1,0 +1,16 @@
+	mov	bx, 1000
+a:	cmp	bx, 1100
+	je	d
+	mov	dx, [bx]
+	mov	cx, bx
+b:	cmp	cx, 10FF
+	je	c
+	add	cx, 2
+	mov	ax, [cx]
+	cmp	ax, dx
+	jbe	b
+	mov	[bx], ax
+	mov	[cx], dx
+c:	add	bx, 2
+	jmp	a
+d:	halt
