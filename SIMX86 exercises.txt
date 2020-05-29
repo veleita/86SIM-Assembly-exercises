@@ -42,6 +42,6 @@ order. You can use a simple insertion sort algorithm. The Pascal code for such a
 
 CONSIDERATIONS
 
-Each of the exercises above is in a folder which contains the program itself and a documentation text file with the exercise statement, the program source code, text cases and the necessary considerations.
+Each of the exercises above is in a folder which contains the program itself and a documentation text file with the exercise statement, the program source code, test cases and the necessary considerations.
 
 To test the programs, you must open the .X86 files in the SIMx86 program. In the Editor tab, click the 'Assemble' button, and in the Emulator tab, press the 'Reset' button and then the 'Run' button everytime you want to execute the program. You can also click on the 'Step' button to make the program execute only the following instruction.
