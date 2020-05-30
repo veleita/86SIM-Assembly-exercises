@@ -1,0 +1,54 @@
+THEORY
+------------------------------------------------------------------------------------------------
+
+1. Von Neumann machines are made up of three elements: the CPU, the memory and the I/O.
+
+
+2. The purpose of
+		  a) the system bus is to connect the different hardware components of the 				     computer with each other by conveying electrical signals (representing 		     		     values 1 or 0) through physical wires.
+
+		  b) the address bus is to identify a specific memory or I/O location through 		     		     its address.
+
+		  c) the data bus is to transfer the data stored in the different components of 			     the computer system between each other.
+
+		  e) the control bus is to determine how the CPU communicates with the rest of 				     the system. For example, read or write instructions.
+
+
+3. The data bus is the one that defines the "size" of the processor.
+
+
+4. The address bus controls how much memory you can have.
+
+
+5. The size of the data bus does not limit the maximum value the CPU can process, it only affects    the speed at which the data can be transfered to the CPU. Larger data buses will be able to
+   carry more data on each memory operation.
+
+
+6. Some data bus sizes
+
+Processor		8088 | 8086 | 80286 | 80386 | 80386sx | 80486 | 80586/Pentium
+Data lines (bits)	8      16     16      32      16        32      64
+Banks of memory*	1	2      2       4       2         4       8
+
+
+7. Some address bus sizes
+
+Processor		8088 | 8086 | 80286 | 80386 | 80386sx | 80486 | 80586/Pentium
+Address lines (bits)	20     20     24      32      24        32      32
+Addressable memory	1 Mb   1 Mb   16 Mb   4 Gb    16 Mb     4 Gb    4 Gb
+
+
+* 8.
+
+
+9. When you store a sord in byte addressable memory, the L.O byte is stored in the specified address, while the H.O is stored in the following address. For example, if you store the value 00FFh in memory adress 1000, the 1000th memory cell will contain 00, and the 1001th one will contain FF.
+			00 | 01
+		1000 |  FF   00
+
+The same goes for a double word, the L.O bytes always goes in the specified memory location. Consider the double word 12345678:
+
+			00 | 01 | 02 | 03 | 
+		1000 |  78   56   34   12
+
+
+10. 
