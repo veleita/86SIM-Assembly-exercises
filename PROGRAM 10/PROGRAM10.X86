@@ -1,16 +1,45 @@
+	mov	dx, 4
+	mov	[1000], dx
+	mov	dx, 5
+	mov	[1002], dx
+	mov	dx, 6
+	mov	[1004], dx
+	mov	dx, 8
+	mov	[1006], dx
+	mov	dx, 1
+	mov	[1008], dx
+	mov	dx, 9
+	mov	[100A], dx
+	mov	dx, 2
+	mov	[100C], dx
+	mov	dx, 5
+	mov	[100E], dx
+	mov	dx, 0
+	mov	[1010], dx
+	mov	dx, 4
+	mov	[1012], dx
+	
 	mov	bx, 1000
 a:	cmp	bx, 1100
 	je	d
-	mov	dx, [bx]
-	mov	cx, bx
-b:	cmp	cx, 10FF
-	je	c
+	sub	cx, cx
+b:	mov	dx, [bx]
 	add	cx, 2
-	mov	ax, [cx]
+	add	bx, cx
+	cmp	bx, 1100
+	jae	c
+	mov	ax, [bx]
+	sub	bx, cx
 	cmp	ax, dx
 	jbe	b
 	mov	[bx], ax
-	mov	[cx], dx
-c:	add	bx, 2
+	add	bx, cx
+	mov	[bx], dx
+	sub	bx, cx
+	jmp	b
+c:	sub	bx, cx
+	mov	ax, [bx]
+	put
+	add	bx, 2
 	jmp	a
 d:	halt

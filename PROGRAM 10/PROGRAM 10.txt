@@ -20,24 +20,57 @@ PROGRAM
 	mov	bx, 1000	; Set initial memory position to 1000
 a:	cmp	bx, 1100
 	je	d		; Stop the program when bx = 1100
-	mov	dx, [bx]	; dx = [bx]
-	mov	cx, bx		; cx = bx
-b:	cmp	cx, 10FF
-	je	c		; Stop the loop when cx = 10FF
+	sub	cx, cx		; cx = 0
+b:	mov	dx, [bx]	; dx = [bx]
 	add	cx, 2		; cx++
-	mov	ax, [cx]	; ax = [cx]
+	add	bx, cx		; bx += cx
+	cmp	bx, 1100
+	je	c		; Stop the loop when bx = 1100
+	mov	ax, [cx]	; ax = [bx + cx]
+	sub	bx, cx		; bx -= cx
 	cmp	ax, dx
 	jbe	b		; If ax <= dx restart the loop
-	mov	[cx], dx
-	mov	[bx], ax	; Swap values
-c:	add	bx, 2		; bx++
+	mov	[bx], ax	; [bx] = ax
+	add	bx, cx
+	mov	[bx], dx	; [bx + cx] = dx 
+	sub	bx, cx		; bx -= cx
+	jmp	b		; Restart the loop
+c:	sub	bx, cx		; bx -= cx
+	add	bx, 2		; bx++
 	jmp	a		; restart the loop
 d:	halt
 
 
 TEST CASES
 ------------------------------------------------------------------------------------------------
+These lines of code have been added at the beginning of the program in order to test it
+
+	mov	dx, 4
+	mov	[1000], dx
+	mov	dx, 5
+	mov	[1002], dx
+	mov	dx, 6
+	mov	[1004], dx
+	mov	dx, 8
+	mov	[1006], dx
+	mov	dx, 1
+	mov	[1008], dx
+	mov	dx, 9
+	mov	[100A], dx
+	mov	dx, 2
+	mov	[100C], dx
+	mov	dx, 5
+	mov	[100E], dx
+	mov	dx, 0
+	mov	[1010], dx
+	mov	dx, 4
+	mov	[1012], dx
+
+The program's output will display these values in order, that is: 9, 8, 6, 5, 5, 4, 4, 2, 1, 0
+
+You can edit the 'mov	dx, n' instructions to add your own values.
 
 
 CONSIDERATIONS
 ------------------------------------------------------------------------------------------------
+None
