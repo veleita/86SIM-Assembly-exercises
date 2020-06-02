@@ -5,13 +5,13 @@ THEORY
 
 
 2. The purpose of
-		  a) the system bus is to connect the different hardware components of the 				     computer with each other by conveying electrical signals (representing 		     		     values 1 or 0) through physical wires.
+		  a) the system bus is to connect the different hardware components of the computer with each other by conveying electrical signals (representing values 1 or 0) through physical wires.
 
-		  b) the address bus is to identify a specific memory or I/O location through 		     		     its address.
+		  b) the address bus is to identify a specific memory or I/O location through its address.
 
-		  c) the data bus is to transfer the data stored in the different components of 			     the computer system between each other.
+		  c) the data bus is to transfer the data stored in the different components of the computer system between each other.
 
-		  e) the control bus is to determine how the CPU communicates with the rest of 				     the system. For example, read or write instructions.
+		  e) the control bus is to determine how the CPU communicates with the rest of the system. For example, read or write instructions.
 
 
 3. The data bus is the one that defines the "size" of the processor.
@@ -20,18 +20,18 @@ THEORY
 4. The address bus controls how much memory you can have.
 
 
-5. The size of the data bus does not limit the maximum value the CPU can process, it only affects    the speed at which the data can be transfered to the CPU. Larger data buses will be able to
+5. The size of the data bus does not limit the maximum value the CPU can process, it only affects the speed at which the data can be transfered to the CPU. Larger data buses will be able to
    carry more data on each memory operation.
 
 
-6. Some data bus sizes
+6. Some data bus sizes:
 
 Processor		8088 | 8086 | 80286 | 80386 | 80386sx | 80486 | 80586/Pentium
 Data lines (bits)	8      16     16      32      16        32      64
 Banks of memory*	1	2      2       4       2         4       8
 
 
-7. Some address bus sizes
+7. Some address bus sizes:
 
 Processor		8088 | 8086 | 80286 | 80386 | 80386sx | 80486 | 80586/Pentium
 Address lines (bits)	20     20     24      32      24        32      32
@@ -51,4 +51,160 @@ The same goes for a double word, the L.O bytes always goes in the specified memo
 		1000 |  78   56   34   12
 
 
-10. 
+10. Memory operations (or memory cycles) needed to read a word:
+
+Word Address //	 | 100 | 101 | 102 | 103 | 104 | 105 |
+	    // Processor |				     |
+--------------------------------------------------------------
+		8088	 | 2	 2     2     2     2     2   |
+		80286	 | 1	 2     1     2     1     2   |
+		80386	 | 1	 1     1     2     1     1   |
+
+
+11. Memory operations (or memory cycles) needed to read a double word:
+
+Word Address //	 | 100 | 101 | 102 | 103 | 104 | 105 |
+	    // Processor |				     |
+--------------------------------------------------------------
+		8088	 | 4	 4     4     4     4     4   |
+		80286	 | 2	 3     2     3     2     3   |
+		80386	 | 1	 2     2     2     1     2   |
+
+
+12. In order to let the processor fetch data in the least possible number of memory cycles, you should always store double words in memory addresses which are evenly divisible by 4, and words in even addresses. It doesn't really matter where you store one-byte data, as it will always be fetched in a single memory cycle.
+
+
+13. 65,536 (2^16) of the memory addresses in a PC are reserved for the I/O data, while main memory typically disposes of 1,048,576 (2^20), 16,777,216 (2^24) or 4,294,976,296 (2^32) memory locations. Anyways, I/O data can also be stored in main memory if necessary.
+
+
+14. The purpose of the system clock is to sync up the different operations performed by the computer.
+
+
+15. A clock cycle is the time that takes for the system clock to complete a period, switching from a zero signal to a one signal.
+
+
+16. The clock frequency and the clock period are inversely proportional, the shortest the clock period is, the higher the clock frequency.
+
+
+17. Clock cycles required to read a byte from memory:
+
+Processor    | 8088 | 8086 | 80486
+Clock cycles | 4      4      1
+
+
+18. The memory access time is the number of clock cycles the system requires to access a memory location; longer memory access times usually result in a lower performance.
+
+
+19. A wait state is an extra clock cycle that the system uses to give some device time to complete an operation.
+
+
+20. Minimum wait states for a 80486 with a 80ns RAM depending of the clock frequency:
+
+Clock speed | 20 MHz | 25 MHz | 33 MHz | 50 MHz | 100 MHz |
+Clock period| 50 ns  | 40 ns  | 30 ns  | 20 ns  |  10 ns  |
+Wait states |  1     |  1     |  2     |  3     |   7     |*
+
+*These are the wait states needed strictly for memory fetching, no buffering or decoding.
+
+
+21. If your CPU runs at 50 MHz, 20ns RAM probably won’t be fast enough to operate at zero wait states. That's because reading from memory is not the only operation the system needs to perform - though it's the most time consumming. Decoding and buffering operations also take place and need some time to be accomplished.
+
+
+22. Sub-10ns RAMs do exist and can be built. However, they are only commonly used in supercomputers because they are very expensive, consume a lot of power, generate lots of heat and are definitely not something practical to have at home.
+
+
+23. The cache memory can save wait states because it reduces the time it takes to find data in memory. That's because it extracts some of the data from the main memory and stores it into a smaller "sub memory" - the cache memory -. The smaller amount of data makes it easier for the processor to go through all of the addresses of the cache memory and find the one it is searching for. The lines of data stored in the cache are the ones which the processor is more likely to look for, if it finds the required data in the cache, it saves it the time of looking through the entire main memory.
+
+
+24. Spatial locality of reference occurs when the addresses of the data that the system is using are near to each other, while temporal locality refers to the frequence with which the system fetches the same addresses.
+
+
+25. In the following Pascal code
+				while i < 10 do begin
+					x := x * i;
+					i := i + 1;
+				end;
+    temporal locality of reference occurs because the same values (i and x) and instructions stored in the same addresses are being read and written over and over, and spatial locallity occurs because these two values (i and x) are declared consecutively, so they have been stored in contiguous spaces of memory, and also because the instructions that the code executes are also the same few ones over and over, and they, too, are stored in consecutive memory locations as the system calls them.
+
+
+26. Cache memory improves the performance of sections of code exhibiting spatial locality of reference because it is more probable to get a hache hit (that's to say, that the program finds the required data in cache memory and doesn't need to seek out for it in the main memory) if the chunks of data you need to access are near to each other. This is due to the way cache memory stores data from the main memory: whenever a program fetches data from memory, the cache memory stores it along with other addresses around that data, foreseeing that the program will most likely seek for some of those addresses later on.
+
+
+27. Cache memory won't, nonetheless, save any wait states if the system is running a program which uses very dispersed data, which occurs when the instructions and variables are not repeated along the code, if it contains many jump instructions, or if the data addresses it uses are very distant from each other.
+
+
+28. Effective (average) number of wait states for
+	a) 80% cache hit ratio, 10 WS for memory, 0 WS for cache => 2 WS
+	b) 90% cache hit ratio, 7 WS for memory, 0 WS for cache => 0.7 WS
+	c) 95% cache hit ratio, 10 WS for memory, 1 WS for cache => 1.45 WS
+	d) 50% cache hit ratio, 2 WS for memory, 0 WS for cache => 1 WS
+
+
+29. The purpose of a two level catching system is to increase the cache hit ratio, thus, it saves wait states and enhances the memory performance.
+
+
+30. Effective (average) number of wait states for
+	a) Primary cache: 80% HR, 0 WS. Secondary cache: 95%, 2 WS. Memory access: 10 WS => 0.48 WS
+	a) Primary cache: 50% HR, 0 WS. Secondary cache: 98%, 1 WS. Memory access: 5 WS => 0.54 WS
+	a) Primary cache: 95% HR, 1 WS. Secondary cache: 98%, 4 WS. Memory access: 10 WS => 0.206 WS
+
+
+31. The purpose of the bus interface unit is to control the address and data busses when accessing main memory, and to access data in the cache memory; while the execution unit performs the operations needed to complete each instruction; and the control unit fetches the instructions' opcodes from memory and places them in the decoding register for execution.
+
+
+32. It always takes more than one clock cycle to execute an instruction because each instruction takes several steps, many of which require memory operations, which, as we have seen, can take some time. For example, a mov instruction that uses a memory operand (for example, the "mov ax, [1000]" instruction) takes the following steps:
+
+	- Fetch the instruction from memory.
+	- Decode the instruction.
+	- Move the ip (instruction pointer) register to the next byte.
+	- Fetch the operand from memory.
+	- Store the fetched value into the destination register.
+	- Move the ip (instruction pointer) register to the next byte.
+
+
+33. A prefetch queue reduces the execution time of instructions because . For example, .
+
+
+34. A pipeline allows you to seemingly execute one instruction per clock cycle because it . For example .
+
+
+35. A hazard is .
+
+
+36. When a hazard occurs on the 80486 processor, .
+
+
+37. You can avoid hazards by .
+
+
+38. Jump instructions affect
+				a) the prefetch queue because
+
+				b) the pipeline because
+
+
+39. A pipeline stall is .
+
+
+40. Aside from reducing wait states, cache memory improves the performance of a pipelined system because .
+
+
+41. A Harvard Architechture Machine is .
+
+
+42. A superscalar CPU speeds up execution by .
+
+
+43. There are two main techniques that any programmer should use to write fast programs when using a superscalar CPU:
+
+
+44. An interrupt is . It improves system performance because .
+
+
+45. Polled I/O is .
+
+
+46. The difference between memory-mapped and I/O mapped I/O is that .
+
+
+47. We say that DMA is a special case of memory-mapped I/O because .
