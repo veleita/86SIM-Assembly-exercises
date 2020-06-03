@@ -162,49 +162,66 @@ Wait states |  1     |  1     |  2     |  3     |   7     |*
 	- Move the ip (instruction pointer) register to the next byte.
 
 
-33. A prefetch queue reduces the execution time of instructions because . For example, .
+33. A prefetch queue reduces the execution time of instructions because it allows to perform some of the instruction steps simultaneously. For example, in the instruction described in the previous question, the BIU can fetch the operand while the instruction is being decoded.
 
 
-34. A pipeline allows you to seemingly execute one instruction per clock cycle because it . For example .
+34. A pipeline allows you to seemingly execute one instruction per clock cycle because it executes many instructions simultaneously by means of assuring that the BIU is always accessing memory and performing the steps of the different instructions simultaneously whenever they don't affect to each other (data hazards) and they don't require a same piece of hardware (pipeline stalls). For example, the pipeline scheme for the three following instructions
+
+1:	mov	ax, [0050]
+2:	mov	bx, 1000
+3:	mov	cx, 1
+
+whould be this
+
+1:	| fetch opcode | decode opcode	  | fetch [0050] value | store into ax    |
+		       |+ prefetch operand|
+2:		       |  fetch opcode    | decode opcode      | store into bx    |
+					  |+ prefetch operand  |
+3:					  | fetch opcode       | decode opcode    | store into cx |
+							       |+ prefetch operand|
+
+Once the pipeline is full (that is, when many operations are being done at the same time, there comes a time when an instruction is being completed every clock cycle.
 
 
-35. A hazard is .
+35. A hazard is, as we anticipated before, a phenomenom that occurs whenever an instruction is conditionned by the execution of some other which appears previously in the code. With the pipeline system, these two instructions can be executing at the same time, and it may happen that some of the steps of the later instruction execute before the necessary steps of the previous one have had time to conclude.
 
 
-36. When a hazard occurs on the 80486 processor, .
+36. The 8486 processor handles these occurrences by introducing delays (sort of the same logic we saw before with the wait states). The code will run properly, but it will run slowlier.
 
 
-37. You can avoid hazards by .
+37. You can avoid hazards by carefully arranging the instructions in your code so the interdependent instructions you may have don't appear one right after the other.
 
 
 38. Jump instructions affect
-				a) the prefetch queue because
+				a) the prefetch queue because the bytes that the prefetch queue has read and stored are the ones that follow the current ip address, if the ip address jumps abruptly these bytes are no longer useful and the prefetch queue needs to start seading and storing the contiguous bytes again.
 
-				b) the pipeline because
-
-
-39. A pipeline stall is .
+				b) the pipeline because the instructions in the pipeline are the ones that follow the opcode in the current ip address, if the ip address jumps abruptly these are no longer the following instructions in the program, so the instructions after the jump instruction (if the condition of the jump happens to be true) need to be flushed off the pipeline.
 
 
-40. Aside from reducing wait states, cache memory improves the performance of a pipelined system because .
+39. A pipeline stall is an occurence that may happen whenever two instructions need to use the same bus at the same time, obviously one of the instructions will need to wait until that piece of hardware is avaiable.
 
 
-41. A Harvard Architechture Machine is .
+40. Aside from reducing wait states, cache memory improves the performance of a pipelined system because it allows the prefetch queue to fill itself from the data cache so it doesn't need to use the BIU, avoiding bus contention.
 
 
-42. A superscalar CPU speeds up execution by .
+41. A Harvard Architechture Machine is a computer with two separate spaces of memory, each with its own bus: one for the data and the other for the opcodes.
 
 
-43. There are two main techniques that any programmer should use to write fast programs when using a superscalar CPU:
+42. A superscalar CPU speeds up execution by adding more execution units, this allows to have larger pipelines because more operations can be performed at once.
 
 
-44. An interrupt is . It improves system performance because .
+43. There are two main techniques that any programmer should use to write fast programs when using a superscalar CPU: avoiding jump instructions as much as possible and sticking with the sortest instructions whenever possible.
 
 
-45. Polled I/O is .
+44. An interrupt is an external hardware event that causes the CPU to interrupt the current instruction sequence and call a special interrupt service routine that saves all the registers and flags (so that it doesn’t disturb the computation it interrupts), does whatever operation is necessary to handle the source of the interrupt, it restores the registers and flags, and then it resumes execution of the code it interrupted. Many I/O devices generate an
+interrupt whenever they have data available or are able to accept data from the CPU. This improves system performance because it saves the time of having to wait for an input event to resume the CPU's activity.
 
 
-46. The difference between memory-mapped and I/O mapped I/O is that .
+45. Polled I/O is a type of I/O operation that makes the CPU to be constantly testing a port to see if data is
+available.
 
 
-47. We say that DMA is a special case of memory-mapped I/O because .
+46. The difference between memory-mapped and I/O mapped I/O is that memory-mapped I/O is the resource they use to communicate with the I/O devices. Memory/mapped I/O uses special memory addresses, while I/O-mapped uses special instructions.
+
+
+47. We say that DMA is a special case of memory-mapped I/O because it reads and writes from memory, only not through the CPU, but through the peripherical device itself.
